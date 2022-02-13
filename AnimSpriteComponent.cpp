@@ -30,6 +30,7 @@ void AnimSpriteComponent::setAnimFPS(float animFPSP)
 void AnimSpriteComponent::update(float dt)
 {
 	SpriteComponent::update(dt);
+
 	if (animTextures.size() > 0)
 	{
 		currentFrame += animFPS * dt;

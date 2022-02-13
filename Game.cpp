@@ -6,6 +6,9 @@
 #include "Assets.h"
 #include "BackgroundSpriteComponent.h"
 #include "Astroid.h"
+#include "Character.h"
+
+using namespace std;
 
 bool Game::initialize()
 {
@@ -17,24 +20,31 @@ bool Game::initialize()
 void Game::load()
 {
 	// Load textures
-	Assets::loadTexture(renderer, "Res\\Ship01.png", "Ship01");
-	Assets::loadTexture(renderer, "Res\\Ship02.png", "Ship02");
-	Assets::loadTexture(renderer, "Res\\Ship03.png", "Ship03");
-	Assets::loadTexture(renderer, "Res\\Ship04.png", "Ship04");
+	Assets::loadTexture(renderer, "Res\\Charac01.png", "Charac01");
+	Assets::loadTexture(renderer, "Res\\Charac02.png", "Charac02");
+	Assets::loadTexture(renderer, "Res\\Charac03.png", "Charac03");
+	Assets::loadTexture(renderer, "Res\\Charac04.png", "Charac04");
 	Assets::loadTexture(renderer, "Res\\Farback01.png", "Farback01");
 	Assets::loadTexture(renderer, "Res\\Farback02.png", "Farback02");
 	Assets::loadTexture(renderer, "Res\\Stars.png", "Stars");
 	Assets::loadTexture(renderer, "Res\\Astroid.png", "Astroid");
+	Assets::loadTexture(renderer, "Res\\Ship.png", "Ship");
+	Assets::loadTexture(renderer, "Res\\Laser.png", "Laser");
+	Assets::loadTexture(renderer, "Res\\Trophy.png", "Trophy");
 
+	Assets::loadTexture(renderer, "Res\\Character.png", "Character");
+
+	
+	//Character
+	Character* character = new Character();
+	character->setPosition(Vector2{ 100, 300 });
 	vector<Texture*> animTextures{
-		&Assets::getTexture("Ship01"),
-		&Assets::getTexture("Ship02"),
-		&Assets::getTexture("Ship03"),
-		&Assets::getTexture("Ship04"),
+		&Assets::getTexture("Charac01"),
+		&Assets::getTexture("Charac02"),
+		&Assets::getTexture("Charac03"),
+		&Assets::getTexture("Charac04"),
 	};
-	Actor* ship = new Actor();
-	AnimSpriteComponent* animatedSprite = new AnimSpriteComponent(ship, animTextures);
-	ship->setPosition(Vector2{ 100, 300 });
+	AnimSpriteComponent* animatedSprite = new AnimSpriteComponent(character, animTextures);
 
 	vector<Texture*> bgTexsFar{
 		&Assets::getTexture("Farback01"),
@@ -46,24 +56,34 @@ void Game::load()
 
 
 	Actor* bgClose = new Actor();
-	std::vector<Texture*> bgTexsClose{
+	vector<Texture*> bgTexsClose{
 		&Assets::getTexture("Stars"),
 		&Assets::getTexture("Stars")
+
 	};
+
+
+
+	
+	
+
+
+	
+	
+	
 	BackgroundSpriteComponent* bgSpritesClose = new BackgroundSpriteComponent(bgClose, bgTexsClose, 50);
+
 	bgSpritesClose->setScrollSpeed(-200.0f);
 
-	const int astroidNumber = 20;
+	const int astroidNumber = 30;
 	for (int i = 0; i < astroidNumber; ++i)
 	{
-		new Astroid();
+		Astroid* dt = new Astroid();
 	}
-
 }
 
 void Game::processInput()
 {
-
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{
@@ -74,13 +94,23 @@ void Game::processInput()
 			break;
 		}
 	}
-	
-	const Uint8* keyboardState = SDL_GetKeyboardState(nullptr);
 
+	const Uint8* keyboardState = SDL_GetKeyboardState(nullptr);
 	if (keyboardState[SDL_SCANCODE_ESCAPE])
 	{
 		isRunning = false;
 	}
+
+	isUpdatingActors = true;
+	for (auto actor : actors)
+	{
+		actor->processInput(keyboardState);
+		
+		
+		
+
+	}
+	isUpdatingActors = false;
 }
 
 void Game::update(float dt)
@@ -98,7 +128,6 @@ void Game::update(float dt)
 		actors.emplace_back(pendingActor);
 	}
 	pendingActors.clear();
-
 	vector<Actor*> deadActors;
 	for (auto actor : actors)
 	{
@@ -118,6 +147,27 @@ void Game::render()
 	renderer.beginDraw();
 	renderer.draw();
 	renderer.endDraw();
+}
+
+vector<Astroid*>& Game::getAstroids()
+{
+	return astroids;
+}
+
+void Game::addAstroid(Astroid* astroid)
+{
+	astroids.emplace_back(astroid);
+}
+
+void Game::removeAstroid(Astroid* astroid)
+{
+	auto iter = find(begin(astroids), end(astroids), astroid);
+	if (iter != astroids.end())
+	{
+		astroids.erase(iter);
+		
+		
+	}
 }
 
 void Game::loop()
@@ -168,7 +218,7 @@ void Game::removeActor(Actor* actor)
 {
 	auto iter = std::find(begin(pendingActors), end(pendingActors), actor);
 	if (iter != end(pendingActors))
-	{	
+	{
 		std::iter_swap(iter, end(pendingActors) - 1);
 		pendingActors.pop_back();
 	}

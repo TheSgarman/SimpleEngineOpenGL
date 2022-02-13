@@ -1,13 +1,15 @@
 #pragma once
-#include "Window.h"
-#include "Renderer.h"
-#include "Vector2.h"
+#include <vector>
 #include "Actor.h"
-#include "Assets.h"
 #include "SpriteComponent.h"
+#include "Window.h"
+#include "IRenderer.h"
+#include "Vector2.h"
+#include "Astroid.h"
+#include "Renderer.h"
+#include "Achievements.h"
 
 using std::vector;
-
 
 class Game
 {
@@ -22,31 +24,39 @@ public:
 	Game& operator=(const Game&) = delete;
 	Game(Game&&) = delete;
 	Game& operator=(Game&&) = delete;
-	bool initialize();
-	void load();
-	void unload();
-	void loop();
-	void close();
-	void addActor(Actor* actor);
-	void removeActor(Actor* actor);
-	Renderer& getRenderer() { return renderer; }
 
 private:
-	Game() :
-		isRunning(true),
-		isUpdatingActors(false)
-	{}
+	Game() : isRunning(true), isUpdatingActors(false) {}
 
+public:
+	bool initialize();
+	void load();
+	void loop();
+	void unload();
+	void close();
+
+	void addActor(Actor* actor);
+	void removeActor(Actor* actor);
+
+	RendererSDL& getRenderer() { return renderer; }
+
+	// Game specific
+	vector<Astroid*>& getAstroids();
+	void addAstroid(Astroid* astroid);
+	void removeAstroid(Astroid* astroid);
+
+private:
 	void processInput();
 	void update(float dt);
 	void render();
 
 	bool isRunning;
 	Window window;
-	Renderer renderer;
+	RendererSDL renderer;
 
 	bool isUpdatingActors;
 	vector<Actor*> actors;
 	vector<Actor*> pendingActors;
-};
 
+	vector<Astroid*> astroids;
+};

@@ -31,16 +31,19 @@ namespace Maths
 			return false;
 		}
 	}
+
 	template <typename T>
 	T max(const T& a, const T& b)
 	{
 		return (a < b ? b : a);
 	}
+
 	template <typename T>
 	T min(const T& a, const T& b)
 	{
 		return (a < b ? a : b);
 	}
+
 	template <typename T>
 	T clamp(const T& value, const T& lower, const T& upper)
 	{
@@ -92,9 +95,11 @@ namespace Maths
 		return sqrtf(value);
 	}
 
-	inline float fmod(float numer, float denom) {
+	inline float fmod(float numer, float denom)
+	{
 		return std::fmod(numer, denom);
 	}
+
 	inline int round(float num)
 	{
 		return static_cast<int>(std::round(num));

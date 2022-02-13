@@ -10,14 +10,17 @@ public:
 
 	float getForwardSpeed() const { return forwardSpeed; }
 	float getAngularSpeed() const { return angularSpeed; }
+	float getWarpSpeed() const { return warpSpeed; }
 
 	void setForwardSpeed(float forwardSpeedP);
 	void setAngularSpeed(float angularSpeedP);
+	void setWarpSpeed(float warpSpeedP);
 
 	void update(float dt) override;
 
 
 private:
+	float warpSpeed;
 	float forwardSpeed;
 	float angularSpeed;
 

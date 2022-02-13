@@ -1,7 +1,7 @@
 #include "BackgroundSpriteComponent.h"
 #include "Actor.h"
 
-BackgroundSpriteComponent::BackgroundSpriteComponent(Actor* ownerP, const vector <Texture*>& texturesP, int drawOrderP) :
+BackgroundSpriteComponent::BackgroundSpriteComponent(Actor* ownerP, const vector<Texture*>& texturesP, int drawOrderP) :
 	SpriteComponent(ownerP, *texturesP[0], drawOrderP),
 	scrollSpeed(0.0f),
 	screenSize(Vector2(WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -26,12 +26,12 @@ void BackgroundSpriteComponent::update(float dt)
 	}
 }
 
-void BackgroundSpriteComponent::draw(Renderer& renderer)
+void BackgroundSpriteComponent::draw(IRenderer& renderer)
 {
 	for (auto& bg : textures)
 	{
 		owner.setPosition(Vector2(bg.offset.x, bg.offset.y));
-		renderer.drawSprite(owner, bg.texture, Rectangle::nullRect, Vector2::zero, Renderer::Flip::None);
+		renderer.drawSprite(owner, bg.texture, Rectangle::nullRect, Vector2::zero, IRenderer::Flip::None);
 	}
 }
 
@@ -40,7 +40,7 @@ void BackgroundSpriteComponent::setTextures(const vector<Texture*>& texturesP)
 	int count = 0;
 	for (auto tex : texturesP)
 	{
-		BGTexture temp{ *tex, Vector2(count * screenSize.x,0) };
+		BGTexture temp{ *tex, Vector2(count * screenSize.x, 0) }; 	// Each texture is screen width in offset
 		textures.emplace_back(temp);
 		count++;
 	}
